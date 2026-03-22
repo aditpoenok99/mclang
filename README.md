@@ -21,7 +21,7 @@ MCLANG saat ini **bisa dipakai untuk MVP/real project skala kecil-menengah**:
 - CLI sudah jalan (`run/check/compile/repl`)
 - Package manager dasar (`mclang moca ...`)
 
-Untuk validasi cepat di mesin Anda:
+Validasi cepat:
 
 ```bash
 npm install
@@ -62,12 +62,25 @@ mclang moca list
 
 ---
 
-## 🌐 Dokumentasi Website
+## 🌐 Website Docs
 
-Website promosi ada di folder `site/` (code block + preview interaktif), siap deploy ke Vercel/Railway.
+Dokumentasi promosi siap live di folder `site/` (code block + preview interaktif).
+
+---
+
+## ☁️ Auto Deploy Railway (GitHub Actions)
+
+Workflow sudah ditambahkan: `.github/workflows/deploy-railway.yml`
+
+### Wajib set secret & variable di GitHub repo:
+
+- `RAILWAY_TOKEN` (Repository Secret)
+- `RAILWAY_SERVICE` (Repository Variable, opsional tapi disarankan)
+
+Setelah itu, setiap push ke `main` akan auto deploy ke Railway.
 
 ---
 
 ## 🔓 Open Source
 
-MIT License, bebas dipakai untuk pribadi dan komersial.
+MIT License, bebas untuk pribadi dan komersial.
