@@ -1,0 +1,46 @@
+{
+  "name": "mclang",
+  "version": "1.0.0",
+  "description": "Mocasus Lang (MCLANG) - A modern programming language for web frontend development",
+  "main": "dist/index.js",
+  "bin": {
+    "mclang": "dist/cli.js"
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "programming-language",
+    "transpiler",
+    "frontend",
+    "javascript",
+    "html",
+    "css",
+    "web-development"
+  ],
+  "author": "Mocasus Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aditpoenok99/mclang.git"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.0.0"
+  }
+}
