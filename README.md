@@ -2,9 +2,9 @@
 
 <div align="center">
 
-![MCLANG Logo](assets/mclang-logo-pink.svg)
+<img src="https://raw.githubusercontent.com/aditpoenok99/mclang/main/assets/mclang-logo-v2-pink.svg" alt="MCLANG Logo" width="120" />
 
-[![Version](https://img.shields.io/badge/version-1.3.0-ff69b4?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.6.0-ff69b4?style=for-the-badge)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-d946ef?style=for-the-badge)](LICENSE)
 
 **Bahasa pemrograman baru dengan sintaks Moca, parser+runtime, CLI, package manager, stdlib, dan module system real antar file `.mc`.**
@@ -13,32 +13,12 @@
 
 ---
 
-## ✨ Baru di v1.3.0
+## ✨ Baru di v2.6.0
 
-- ✅ Tambahan **10 sintaks baru** awalan `m` (termasuk `moy`)
-- ✅ **Module system real**: `mimpor` / `mekspor` antar file `.mc`
-- ✅ CLI `run/check` sudah membaca graph module
-
----
-
-## 🔤 10 Sintaks Baru Awalan `m`
-
-1. `moy` => `from`
-2. `mimpor` => `import`
-3. `mekspor` => `export`
-4. `mfungsi` => `function` (reserved)
-5. `mbalik` => `return` (reserved)
-6. `muntuk` => `for` (reserved)
-7. `mselama` => `while` (reserved)
-8. `mkelas` => `class` (reserved)
-9. `mbenar` => `true`
-10. `msalah` => `false`
-
-Sintaks lama tetap ada:
-- `mc` => `const`
-- `moca` => `var`
-- `marah` => `if`
-- `malu` => `else`
+- ✅ Website dokumentasi baru di `site/` (code block + preview)
+- ✅ Deploy config siap Vercel / Railway
+- ✅ Logo baru MCLANG v2 pink
+- ✅ Rilis versi 2.6.0
 
 ---
 
@@ -70,20 +50,13 @@ mclang run main.mc
 ## 🚀 CLI Production Flow
 
 ```bash
-# cek syntax + parser + graph module
 mclang check main.mc
-
-# jalankan interpreter dengan module resolution
 mclang run main.mc
-
-# compile entry ke JavaScript
 mclang compile main.mc -o dist/main.js
-
-# repl
 mclang repl
 ```
 
-Package manager konsep Moca:
+Package manager Moca:
 
 ```bash
 mclang moca init
@@ -94,30 +67,42 @@ mclang moca remove ui-kit
 
 ---
 
+## 🌐 Website Docs
+
+Dokumentasi promosi siap live di folder:
+
+```text
+site/
+  index.html
+  styles.css
+  app.js
+```
+
+Fitur:
+- code block
+- preview simulasi hasil kode
+- CTA ke GitHub
+
+---
+
+## ☁️ Deploy cepat
+
+### Vercel
+- Import repo ini
+- Framework: `Other`
+- Deploy (file `vercel.json` sudah ada)
+
+### Railway
+- New Project → Deploy from GitHub repo ini
+- Railway pakai `Dockerfile` + `railway.toml` otomatis
+
+---
+
 ## 🧪 Testing
 
 ```bash
 npm test
 npm run test:smoke
-```
-
-Coverage mencakup:
-- alias sintaks
-- runtime parser
-- error message
-- **module import/export antar file `.mc`**
-
----
-
-## 🛠️ Core Files
-
-```text
-src/
-  lexer.ts        # tokenizer + alias m*
-  parser.ts       # parser AST + import/export
-  interpreter.ts  # runtime + module binding
-  index.ts        # module resolver antar .mc
-  cli.ts          # run/check/compile/repl + moca pm
 ```
 
 ---
