@@ -1,6 +1,6 @@
 {
   "name": "mclang",
-  "version": "1.3.0",
+  "version": "2.6.0",
   "description": "Mocasus Lang (MCLANG) - A modern programming language for web frontend development",
   "main": "dist/index.js",
   "bin": {

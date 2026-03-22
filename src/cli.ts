@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as readline from 'readline';
 import { MCLang } from './index';
 
-const VERSION = '1.3.0';
+const VERSION = '2.6.0';
 const program = new Command();
 
 program.name('mclang').description('Mocasus Lang CLI').version(VERSION);
@@ -72,7 +72,7 @@ program
   .description('REPL Moca interaktif')
   .action(() => {
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout, prompt: 'moca> ' });
-    console.log('Moca REPL v1.3.0 | ketik :q untuk keluar');
+    console.log('Moca REPL v2.6.0 | ketik :q untuk keluar');
     rl.prompt();
     rl.on('line', (line) => {
       const txt = line.trim();

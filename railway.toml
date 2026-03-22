@@ -1,0 +1,9 @@
+[build]
+builder = "DOCKERFILE"
+
+env = { NGINX_PORT = "8080" }
+
+[deploy]
+startCommand = "nginx -g 'daemon off;'"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5

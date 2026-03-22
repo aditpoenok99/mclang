@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCLANG 2.6.0 - Moca Language</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <img src="../assets/mclang-logo-v2-pink.svg" alt="MCLANG logo" class="logo" />
+    <h1>MCLANG <span>2.6.0</span></h1>
+    <p>Bahasa Moca untuk frontend modern: simple syntax, module system, dan DX yang manis.</p>
+    <a class="btn" href="https://github.com/aditpoenok99/mclang" target="_blank" rel="noreferrer">GitHub Repo</a>
+  </header>
+
+  <main class="container">
+    <section class="grid">
+      <article class="card">
+        <h2>Core Features</h2>
+        <ul>
+          <li>Lexer + Parser + Interpreter</li>
+          <li>Module system antar file <code>.mc</code></li>
+          <li>CLI + package manager <code>moca</code></li>
+          <li>Standard library bawaan</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Production Readiness</h2>
+        <p><strong>Status:</strong> MVP-ready for real projects and internal tools.</p>
+        <p>Untuk enterprise production, tambah CI matrix, security audit, benchmark, dan contract testing.</p>
+      </article>
+    </section>
+
+    <section class="playground card">
+      <h2>Code Block + Preview</h2>
+      <div class="split">
+        <div>
+          <label for="code">Moca Code</label>
+          <textarea id="code">mimpor { pajak } moy "./util.mc";
+mc subtotal = 100;
+mc total = subtotal + pajak;
+tampil(total);</textarea>
+          <button id="runBtn" class="btn">Preview Result</button>
+        </div>
+        <div>
+          <label>Preview</label>
+          <pre id="preview">Klik "Preview Result" untuk melihat output simulasi.</pre>
+        </div>
+      </div>
+      <p class="note">Catatan: preview ini simulasi dokumentasi untuk promosi; runtime asli ada di CLI <code>mclang run</code>.</p>
+    </section>
+
+    <section class="card">
+      <h2>Deploy Now</h2>
+      <ol>
+        <li>Vercel: import repo ini, framework <code>Other</code>, root default.</li>
+        <li>Railway: deploy via Dockerfile yang sudah disediakan.</li>
+      </ol>
+      <p>File deploy sudah ada: <code>vercel.json</code>, <code>railway.toml</code>, <code>Dockerfile</code>.</p>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
