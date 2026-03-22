@@ -34,6 +34,12 @@ export class Lexer {
     ['element', TokenType.ELEMENT],
     ['style', TokenType.STYLE],
     ['script', TokenType.SCRIPT],
+
+    // Mocasus native aliases
+    ['mc', TokenType.CONST],
+    ['moca', TokenType.VAR],
+    ['marah', TokenType.IF],
+    ['malu', TokenType.ELSE],
   ]);
 
   constructor(source: string) {
@@ -119,7 +125,7 @@ export class Lexer {
   public tokenize(): Token[] {
     while (this.position < this.source.length) {
       this.skipWhitespace();
-      
+
       const char = this.peek();
       if (char === '\0') break;
 
@@ -155,7 +161,6 @@ export class Lexer {
           raw: identifier,
         });
       } else {
-        // Handle operators and delimiters
         switch (char) {
           case '+':
             this.advance();

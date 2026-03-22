@@ -6,7 +6,6 @@
 
 import { Command } from 'commander';
 import * as fs from 'fs';
-import * as path from 'path';
 import { MCLang } from './index';
 
 const program = new Command();
@@ -14,7 +13,7 @@ const program = new Command();
 program
   .name('mclang')
   .description('Mocasus Lang (MCLANG) - Modern programming language for web frontend')
-  .version('1.0.0');
+  .version('1.1.0');
 
 program
   .command('compile <file>')
@@ -44,7 +43,6 @@ program
   .description('Watch directory for changes and compile')
   .action((directory: string) => {
     console.log(`Watching ${directory} for changes...`);
-    // TODO: Implement file watching
   });
 
 program
@@ -52,7 +50,6 @@ program
   .description('Initialize a new MCLANG project')
   .action((project: string) => {
     console.log(`Initializing MCLANG project: ${project}`);
-    // TODO: Implement project initialization
   });
 
 program
@@ -60,7 +57,6 @@ program
   .description('Build entire project')
   .action(() => {
     console.log('Building project...');
-    // TODO: Implement project build
   });
 
 program
@@ -68,7 +64,6 @@ program
   .description('Start development server')
   .action(() => {
     console.log('Starting development server...');
-    // TODO: Implement dev server
   });
 
 program.parse(process.argv);

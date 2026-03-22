@@ -1,6 +1,6 @@
 {
   "name": "mclang",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Mocasus Lang (MCLANG) - A modern programming language for web frontend development",
   "main": "dist/index.js",
   "bin": {
@@ -11,6 +11,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "jest",
+    "test:smoke": "jest src/__tests__/smoke.compile.test.ts",
     "lint": "eslint src/**/*.ts",
     "prepare": "npm run build"
   },

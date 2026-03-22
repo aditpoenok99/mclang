@@ -1,5 +1,22 @@
 # MCLANG Change Log
 
+## [1.1.0] - 2026-03-22
+
+### Added
+- Native Mocasus syntax aliases:
+  - `mc` => `const`
+  - `moca` => `var`
+  - `marah` => `if`
+  - `malu` => `else`
+- Pink simple logo asset: `assets/mclang-logo-pink.svg`
+- Interactive README sections with preview-style code examples
+- Smoke tests and alias lexer tests
+
+### Changed
+- CLI version bumped to `1.1.0`
+- package version bumped to `1.1.0`
+- Added `test:smoke` script
+
 ## [1.0.0] - 2024-03-22
 
 ### Added
