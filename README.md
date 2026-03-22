@@ -2,111 +2,72 @@
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/aditpoenok99/mclang/main/assets/mclang-logo-v2-pink.svg" alt="MCLANG Logo" width="120" />
+<img src="https://raw.githubusercontent.com/aditpoenok99/mclang/main/assets/mclang-logo-sakura.svg" alt="MCLANG Sakura Logo" width="110" />
 
 [![Version](https://img.shields.io/badge/version-2.6.0-ff69b4?style=for-the-badge)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-d946ef?style=for-the-badge)](LICENSE)
 
-**Bahasa pemrograman baru dengan sintaks Moca, parser+runtime, CLI, package manager, stdlib, dan module system real antar file `.mc`.**
+**Bahasa pemrograman Moca untuk frontend modern: parser, runtime, module system, CLI, dan package manager.**
 
 </div>
 
 ---
 
-## ✨ Baru di v2.6.0
+## ✅ Status Validasi Pemakaian
 
-- ✅ Website dokumentasi baru di `site/` (code block + preview)
-- ✅ Deploy config siap Vercel / Railway
-- ✅ Logo baru MCLANG v2 pink
-- ✅ Rilis versi 2.6.0
+MCLANG saat ini **bisa dipakai untuk MVP/real project skala kecil-menengah**:
+- Lexer + Parser + Interpreter sudah jalan
+- Module system antar file `.mc` sudah jalan (`mimpor`/`mekspor`)
+- CLI sudah jalan (`run/check/compile/repl`)
+- Package manager dasar (`mclang moca ...`)
 
----
-
-## 📦 Module System Real (`.mc` ke `.mc`)
-
-### `util.mc`
-
-```mclang
-mekspor mc pajak = 11;
-mekspor mc diskon = 3;
-```
-
-### `main.mc`
-
-```mclang
-mimpor { pajak, diskon } moy "./util.mc";
-mc total = pajak + diskon;
-tampil(total);
-```
-
-Jalankan:
+Untuk validasi cepat di mesin Anda:
 
 ```bash
-mclang run main.mc
+npm install
+npm run build
+npm test
+mclang check examples/main.mc
+mclang run examples/main.mc
 ```
 
 ---
 
-## 🚀 CLI Production Flow
+## 🔤 Sintaks Moca (inti)
+
+```mclang
+mimpor { pajak } moy "./util.mc";
+mc subtotal = 100;
+marah (subtotal > 0) {
+  tampil(subtotal + pajak);
+} malu {
+  tampil(0);
+}
+```
+
+---
+
+## 🚀 CLI
 
 ```bash
 mclang check main.mc
 mclang run main.mc
 mclang compile main.mc -o dist/main.js
 mclang repl
-```
 
-Package manager Moca:
-
-```bash
 mclang moca init
 mclang moca add ui-kit 1.0.0
 mclang moca list
-mclang moca remove ui-kit
 ```
 
 ---
 
-## 🌐 Website Docs
+## 🌐 Dokumentasi Website
 
-Dokumentasi promosi siap live di folder:
-
-```text
-site/
-  index.html
-  styles.css
-  app.js
-```
-
-Fitur:
-- code block
-- preview simulasi hasil kode
-- CTA ke GitHub
-
----
-
-## ☁️ Deploy cepat
-
-### Vercel
-- Import repo ini
-- Framework: `Other`
-- Deploy (file `vercel.json` sudah ada)
-
-### Railway
-- New Project → Deploy from GitHub repo ini
-- Railway pakai `Dockerfile` + `railway.toml` otomatis
-
----
-
-## 🧪 Testing
-
-```bash
-npm test
-npm run test:smoke
-```
+Website promosi ada di folder `site/` (code block + preview interaktif), siap deploy ke Vercel/Railway.
 
 ---
 
 ## 🔓 Open Source
 
-MIT License, bebas untuk pribadi dan komersial.
+MIT License, bebas dipakai untuk pribadi dan komersial.
