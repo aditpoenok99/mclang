@@ -1,4 +1,4 @@
-import { Program, Statement, Expression, BlockStatement } from './ast';
+import { Program, Statement, Expression, BlockStatement, ImportStatement, ExportDeclaration } from './ast';
 import { MocaError } from './errors';
 import { Token, TokenType } from './types';
 
@@ -19,6 +19,8 @@ export class Parser {
   }
 
   private parseStatement(): Statement {
+    if (this.match(TokenType.IMPORT)) return this.parseImportStatement();
+    if (this.match(TokenType.EXPORT)) return this.parseExportStatement();
     if (this.match(TokenType.CONST)) return this.parseVariableDeclaration('const');
     if (this.match(TokenType.VAR)) return this.parseVariableDeclaration('var');
     if (this.match(TokenType.IF)) return this.parseIfStatement();
@@ -27,6 +29,55 @@ export class Parser {
     const expression = this.parseExpression();
     this.match(TokenType.SEMICOLON);
     return { type: 'ExpressionStatement', expression };
+  }
+
+  private parseImportStatement(): ImportStatement {
+    const specifiers: string[] = [];
+
+    if (this.match(TokenType.LBRACE)) {
+      do {
+        const ident = this.consume(TokenType.IDENTIFIER, 'Import wajib punya nama identifier.');
+        specifiers.push(String(ident.value));
+      } while (this.match(TokenType.COMMA));
+      this.consume(TokenType.RBRACE, 'Daftar import harus ditutup }.');
+    } else {
+      const single = this.consume(TokenType.IDENTIFIER, 'Import default wajib identifier.');
+      specifiers.push(String(single.value));
+    }
+
+    this.consume(TokenType.FROM, "Import wajib pakai 'moy/from'.");
+    const src = this.consume(TokenType.STRING, 'Path module import wajib string.');
+    this.match(TokenType.SEMICOLON);
+
+    return {
+      type: 'ImportStatement',
+      specifiers,
+      source: String(src.value),
+    };
+  }
+
+  private parseExportStatement(): ExportDeclaration {
+    if (this.match(TokenType.CONST)) {
+      return { type: 'ExportDeclaration', declaration: this.parseVariableDeclaration('const') as any };
+    }
+
+    if (this.match(TokenType.VAR)) {
+      return { type: 'ExportDeclaration', declaration: this.parseVariableDeclaration('var') as any };
+    }
+
+    if (this.match(TokenType.LBRACE)) {
+      const specifiers: string[] = [];
+      do {
+        const ident = this.consume(TokenType.IDENTIFIER, 'Export list wajib identifier.');
+        specifiers.push(String(ident.value));
+      } while (this.match(TokenType.COMMA));
+      this.consume(TokenType.RBRACE, 'Daftar export harus ditutup }.');
+      this.match(TokenType.SEMICOLON);
+      return { type: 'ExportDeclaration', specifiers };
+    }
+
+    const t = this.peek();
+    throw new MocaError('Export Moca hanya mendukung deklarasi variabel atau daftar export.', 'PAR006', t.line, t.column, "Contoh: mekspor mc a = 1; atau mekspor { a };");
   }
 
   private parseVariableDeclaration(kind: 'const' | 'var'): Statement {

@@ -15,12 +15,32 @@ export class Lexer {
     ['else', TokenType.ELSE],
     ['true', TokenType.BOOLEAN],
     ['false', TokenType.BOOLEAN],
+    ['import', TokenType.IMPORT],
+    ['export', TokenType.EXPORT],
+    ['from', TokenType.FROM],
+    ['function', TokenType.FUNCTION],
+    ['return', TokenType.RETURN],
+    ['for', TokenType.FOR],
+    ['while', TokenType.WHILE],
+    ['class', TokenType.CLASS],
 
-    // Native Moca aliases
+    // Existing Moca aliases
     ['mc', TokenType.CONST],
     ['moca', TokenType.VAR],
     ['marah', TokenType.IF],
     ['malu', TokenType.ELSE],
+
+    // 10 new aliases (awalan m)
+    ['moy', TokenType.FROM],
+    ['mimpor', TokenType.IMPORT],
+    ['mekspor', TokenType.EXPORT],
+    ['mfungsi', TokenType.FUNCTION],
+    ['mbalik', TokenType.RETURN],
+    ['muntuk', TokenType.FOR],
+    ['mselama', TokenType.WHILE],
+    ['mkelas', TokenType.CLASS],
+    ['mbenar', TokenType.BOOLEAN],
+    ['msalah', TokenType.BOOLEAN],
   ]);
 
   constructor(source: string) {
@@ -155,7 +175,9 @@ export class Lexer {
       if (/[a-zA-Z_$]/.test(char)) {
         const ident = this.readIdentifier();
         const type = this.keywords.get(ident) || TokenType.IDENTIFIER;
-        const value = type === TokenType.BOOLEAN ? ident === 'true' : ident;
+        const value = type === TokenType.BOOLEAN
+          ? ident === 'true' || ident === 'mbenar'
+          : ident;
         this.add(type, value, ident, line, column);
         continue;
       }

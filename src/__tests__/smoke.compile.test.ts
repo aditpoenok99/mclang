@@ -1,7 +1,7 @@
 import { MCLang } from '../index';
 
 describe('MCLANG smoke compile', () => {
-  it('compiles source using new aliases without throwing', () => {
+  it('compiles source using aliases without throwing', () => {
     const source = `
       mc judul = "Halo";
       moca angka = 7;
@@ -9,7 +9,7 @@ describe('MCLANG smoke compile', () => {
     `;
 
     const output = MCLang.fromString(source).compile();
-    expect(output).toContain('Transpiled from MCLANG');
+    expect(output).toContain('Transpiled from MCLANG v1.3.0');
     expect(output).toContain('const judul = "Halo";');
   });
 });

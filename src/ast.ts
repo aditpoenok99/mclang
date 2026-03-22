@@ -1,6 +1,17 @@
-export type Statement = VariableDeclaration | IfStatement | BlockStatement | ExpressionStatement;
+export type Statement =
+  | VariableDeclaration
+  | IfStatement
+  | BlockStatement
+  | ExpressionStatement
+  | ImportStatement
+  | ExportDeclaration;
 
-export type Expression = LiteralExpression | IdentifierExpression | BinaryExpression | UnaryExpression | CallExpression;
+export type Expression =
+  | LiteralExpression
+  | IdentifierExpression
+  | BinaryExpression
+  | UnaryExpression
+  | CallExpression;
 
 export interface Program {
   type: 'Program';
@@ -29,6 +40,18 @@ export interface BlockStatement {
 export interface ExpressionStatement {
   type: 'ExpressionStatement';
   expression: Expression;
+}
+
+export interface ImportStatement {
+  type: 'ImportStatement';
+  specifiers: string[];
+  source: string;
+}
+
+export interface ExportDeclaration {
+  type: 'ExportDeclaration';
+  declaration?: VariableDeclaration;
+  specifiers?: string[];
 }
 
 export interface LiteralExpression {

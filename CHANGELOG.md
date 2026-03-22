@@ -1,5 +1,26 @@
 # MCLANG Change Log
 
+## [1.3.0] - 2026-03-22
+
+### Added
+- 10 new `m*` syntax aliases:
+  - `moy` => `from`
+  - `mimpor` => `import`
+  - `mekspor` => `export`
+  - `mfungsi` => `function`
+  - `mbalik` => `return`
+  - `muntuk` => `for`
+  - `mselama` => `while`
+  - `mkelas` => `class`
+  - `mbenar` => `true`
+  - `msalah` => `false`
+- Real module system antar file `.mc` (import/export)
+- Test module import/export (`module.system.test.ts`)
+
+### Changed
+- CLI and package version bumped to `1.3.0`
+- `mclang run/check` now supports module graph resolution
+
 ## [1.2.0] - 2026-03-22
 
 ### Added
@@ -35,16 +56,3 @@
 - CLI version bumped to `1.1.0`
 - package version bumped to `1.1.0`
 - Added `test:smoke` script
-
-## [1.0.0] - 2024-03-22
-
-### Added
-- Initial release of MCLANG (Mocasus Lang)
-- Lexer for tokenizing MCLANG source code
-- Basic parser and transpiler
-- Support for element definitions (components)
-- CSS scoping for component styles
-- React-like hooks (useState, useEffect)
-- CLI with basic commands (compile, watch, dev, build)
-- Comprehensive documentation and examples
-- MIT License

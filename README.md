@@ -4,41 +4,37 @@
 
 ![MCLANG Logo](assets/mclang-logo-pink.svg)
 
-[![Version](https://img.shields.io/badge/version-1.2.0-ff69b4?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.3.0-ff69b4?style=for-the-badge)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-d946ef?style=for-the-badge)](LICENSE)
 
-**Bahasa pemrograman baru dengan sintaks khas Moca, parser+runtime, CLI, package manager, dan stdlib.**
+**Bahasa pemrograman baru dengan sintaks Moca, parser+runtime, CLI, package manager, stdlib, dan module system real antar file `.mc`.**
 
 </div>
 
 ---
 
-## 🔥 Ringkasan v1.2.0
+## ✨ Baru di v1.3.0
 
-- ✅ Semantics & paradigma Moca sekarang jelas (`docs/SEMANTICS.md`)
-- ✅ Lexer stabil + error message ala Moca
-- ✅ Parser AST nyata
-- ✅ Interpreter runtime yang bisa menjalankan program
-- ✅ Standard Library bawaan (`tampil`, `panjang`, `tipe`, dll)
-- ✅ CLI lebih lengkap (`run`, `check`, `compile`, `repl`)
-- ✅ Package manager konsep Moca (`mclang moca ...`)
+- ✅ Tambahan **10 sintaks baru** awalan `m` (termasuk `moy`)
+- ✅ **Module system real**: `mimpor` / `mekspor` antar file `.mc`
+- ✅ CLI `run/check` sudah membaca graph module
 
 ---
 
-## 🧠 Sintaks Khas Moca
+## 🔤 10 Sintaks Baru Awalan `m`
 
-```mclang
-mc nama = "Moca";
-moca umur = 2;
+1. `moy` => `from`
+2. `mimpor` => `import`
+3. `mekspor` => `export`
+4. `mfungsi` => `function` (reserved)
+5. `mbalik` => `return` (reserved)
+6. `muntuk` => `for` (reserved)
+7. `mselama` => `while` (reserved)
+8. `mkelas` => `class` (reserved)
+9. `mbenar` => `true`
+10. `msalah` => `false`
 
-marah (umur > 1) {
-  tampil("aktif");
-} malu {
-  tampil("tidak aktif");
-}
-```
-
-Alias:
+Sintaks lama tetap ada:
 - `mc` => `const`
 - `moca` => `var`
 - `marah` => `if`
@@ -46,64 +42,55 @@ Alias:
 
 ---
 
-## 🧭 Paradigma & Semantics
+## 📦 Module System Real (`.mc` ke `.mc`)
 
-Moca sekarang punya kontrak semantics yang jelas:
-- **Imperative core** + expression-oriented statements
-- block scope (`{}`) dan binding rule (`mc` immutable, `moca` mutable)
-- error contract ala Moca (`[MocaError CODE] ... Tips Moca: ...`)
+### `util.mc`
 
-Detail lengkap: `docs/SEMANTICS.md`
+```mclang
+mekspor mc pajak = 11;
+mekspor mc diskon = 3;
+```
+
+### `main.mc`
+
+```mclang
+mimpor { pajak, diskon } moy "./util.mc";
+mc total = pajak + diskon;
+tampil(total);
+```
+
+Jalankan:
+
+```bash
+mclang run main.mc
+```
 
 ---
 
-## 🚀 CLI (Bisa Dipakai)
+## 🚀 CLI Production Flow
 
 ```bash
-# cek syntax + parser
-mclang check app.mc
+# cek syntax + parser + graph module
+mclang check main.mc
 
-# jalankan langsung via interpreter
-mclang run app.mc
+# jalankan interpreter dengan module resolution
+mclang run main.mc
 
-# compile ke JavaScript
-mclang compile app.mc -o dist/app.js
+# compile entry ke JavaScript
+mclang compile main.mc -o dist/main.js
 
-# repl interaktif
+# repl
 mclang repl
 ```
 
----
-
-## 📦 Package Manager Konsep Moca
+Package manager konsep Moca:
 
 ```bash
-# init project metadata
 mclang moca init
-
-# add package (metadata)
 mclang moca add ui-kit 1.0.0
-
-# list package
 mclang moca list
-
-# remove package
 mclang moca remove ui-kit
 ```
-
-File metadata project: `moca.json`
-
----
-
-## 📚 Standard Library Core
-
-- `tampil(...args)` / `print(...args)`
-- `panjang(teks)`
-- `tipe(value)`
-- `angka(value)`
-- `teks(value)`
-
-Detail: `docs/STDLIB.md`
 
 ---
 
@@ -114,23 +101,22 @@ npm test
 npm run test:smoke
 ```
 
-Cakupan test:
-- alias syntax lexer
-- parser + runtime
-- error message style
-- smoke compile
+Coverage mencakup:
+- alias sintaks
+- runtime parser
+- error message
+- **module import/export antar file `.mc`**
 
 ---
 
-## 🛠️ Arsitektur Core
+## 🛠️ Core Files
 
 ```text
 src/
-  lexer.ts        # tokenizer stabil + error jelas
-  parser.ts       # AST parser
-  interpreter.ts  # runtime evaluator
-  stdlib.ts       # standard library core
-  errors.ts       # MocaError format
+  lexer.ts        # tokenizer + alias m*
+  parser.ts       # parser AST + import/export
+  interpreter.ts  # runtime + module binding
+  index.ts        # module resolver antar .mc
   cli.ts          # run/check/compile/repl + moca pm
 ```
 
@@ -138,4 +124,4 @@ src/
 
 ## 🔓 Open Source
 
-MIT License. Bebas dipakai untuk personal/komersial.
+MIT License, bebas untuk pribadi dan komersial.
