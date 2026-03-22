@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCLANG - Modern Programming Language for Web</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #ff69b4;
+      --primary-light: #ff85c1;
+      --primary-lighter: #ffc0d0;
+      --secondary: #d946ef;
+      --accent: #ec4899;
+      --bg-light: #fff5f7;
+      --bg-lighter: #fffafc;
+      --text-dark: #6b3f7f;
+      --text-light: #9b6ba8;
+      --border: #ffd1dc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #fff5f7 0%, #fffafc 100%);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #ff69b4 0%, #d946ef 100%);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.3s;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Sections */
+    section {
+      margin: 4rem 0;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.1);
+      border: 1px solid var(--border);
+    }
+
+    section h2 {
+      color: var(--primary);
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 3px solid var(--primary-lighter);
+      padding-bottom: 1rem;
+    }
+
+    section h3 {
+      color: var(--secondary);
+      font-size: 1.4rem;
+      margin: 1.5rem 0 1rem;
+    }
+
+    /* Code Block */
+    .code-block {
+      background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+      color: #e8e8e8;
+      padding: 1.5rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-left: 4px solid var(--primary);
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .code-block code {
+      color: inherit;
+    }
+
+    /* Preview Box */
+    .preview {
+      background: linear-gradient(135deg, #fff5f7 0%, #ffe4e9 100%);
+      padding: 2rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      border: 2px solid var(--border);
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .preview h4 {
+      color: var(--primary);
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Feature Grid */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .feature-card {
+      background: linear-gradient(135deg, #ffe4e9 0%, #fff5f7 100%);
+      padding: 1.5rem;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2);
+      border-color: var(--primary);
+    }
+
+    .feature-card h4 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    .feature-card p {
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+
+    /* Example Section */
+    .example {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: var(--bg-light);
+      border-radius: 8px;
+      border-left: 4px solid var(--secondary);
+    }
+
+    .example h4 {
+      color: var(--secondary);
+      margin-bottom: 1rem;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+    }
+
+    th {
+      background: linear-gradient(135deg, #ff85c1 0%, #d946ef 100%);
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tr:nth-child(even) {
+      background: var(--bg-light);
+    }
+
+    /* Button Styles */
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #ff69b4 0%, #d946ef 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 105, 180, 0.3);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #ffc0d0 0%, #ff85c1 100%);
+    }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #f085b3 0%, #c946d9 100%);
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 4rem;
+      box-shadow: 0 -5px 20px rgba(255, 105, 180, 0.2);
+    }
+
+    /* Animation */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    section, .feature-card {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      section {
+        padding: 1.5rem;
+      }
+
+      .code-block {
+        font-size: 0.85rem;
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>✨ MCLANG</h1>
+    <p>Modern Programming Language for Web Frontend Development</p>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#examples">Examples</a>
+      <a href="#spawn">SPAWN Animation</a>
+      <a href="#getting-started">Get Started</a>
+      <a href="https://github.com/aditpoenok99/mclang">GitHub</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Features Section -->
+    <section id="features">
+      <h2>🌟 Unique Features</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4>✨ SPAWN Animation</h4>
+          <p>Smooth animations dengan syntax mudah. Preset animations siap pakai dengan stagger otomatis.</p>
+        </div>
+        <div class="feature-card">
+          <h4>⚡ Component-Based</h4>
+          <p>Buat component reusable dengan props dan children, mirip React tapi syntax lebih intuitif.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🎨 Scoped Styling</h4>
+          <p>CSS terintegrasi dengan automatic scope. Tidak perlu khawatir style conflict.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🔄 React-like Hooks</h4>
+          <p>useState, useEffect, dan hooks lainnya untuk state management yang powerful.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🚀 Fast Compilation</h4>
+          <p>Transpile ke JavaScript dengan cepat. Output yang optimal dan efisien.</p>
+        </div>
+        <div class="feature-card">
+          <h4>📱 Responsive Design</h4>
+          <p>Built-in media queries dan flexible layout system untuk semua ukuran layar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Example -->
+    <section id="examples">
+      <h2>💡 Quick Examples</h2>
+      
+      <h3>Hello World</h3>
+      <div class="example">
+        <h4>Simple Component</h4>
+        <p>Buat component pertama Anda dalam 10 baris kode:</p>
+      </div>
+      <div class="code-block"><code>element HelloWorld {
+  &lt;div class="greeting"&gt;
+    &lt;h1&gt;Hello, MCLANG!&lt;/h1&gt;
+    &lt;p&gt;Welcome to modern web&lt;/p&gt;
+  &lt;/div&gt;
+  
+  style {
+    .greeting {
+      padding: 2rem;
+      background: linear-gradient(135deg, #ff69b4 0%, #d946ef 100%);
+      color: white;
+      border-radius: 8px;
+    }
+  }
+}</code></div>
+      
+      <div class="preview">
+        <h4>Preview</h4>
+        <div style="background: linear-gradient(135deg, #ff69b4 0%, #d946ef 100%); color: white; padding: 2rem; border-radius: 8px; width: 100%; max-width: 400px; text-align: center;">
+          <h1 style="margin: 0; font-size: 2rem;">Hello, MCLANG!</h1>
+          <p style="margin: 1rem 0 0; opacity: 0.9;">Welcome to modern web</p>
+        </div>
+      </div>
+
+      <hr style="border: none; border-top: 2px solid var(--border); margin: 3rem 0;">
+
+      <h3>Counter dengan State</h3>
+      <div class="example">
+        <h4>State Management</h4>
+        <p>Gunakan useState hook untuk manage state dengan mudah:</p>
+      </div>
+      <div class="code-block"><code>element Counter {
+  const [count, setCount] = useState(0)
+  
+  &lt;div class="counter"&gt;
+    &lt;p&gt;Count: {count}&lt;/p&gt;
+    &lt;button onclick={() =&gt; setCount(count + 1)}&gt;
+      Increment
+    &lt;/button&gt;
+  &lt;/div&gt;
+  
+  style {
+    .counter {
+      padding: 2rem;
+      background: linear-gradient(135deg, #fff5f7 0%, #ffe4e9 100%);
+      border-radius: 8px;
+    }
+  }
+}</code></div>
+
+      <div class="preview">
+        <h4>Preview</h4>
+        <div style="background: linear-gradient(135deg, #fff5f7 0%, #ffe4e9 100%); padding: 2rem; border-radius: 8px; width: 100%; max-width: 400px; text-align: center;">
+          <p style="margin: 0 0 1rem; color: var(--primary); font-weight: bold; font-size: 1.3rem;">Count: 0</p>
+          <button style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ff69b4 0%, #d946ef 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">Increment</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SPAWN Animation Section -->
+    <section id="spawn">
+      <h2>✨ SPAWN Animation - Unique Feature</h2>
+      
+      <div class="example">
+        <h4>Apa itu SPAWN?</h4>
+        <p>SPAWN adalah sistem animasi unik MCLANG yang membuat animasi kompleks menjadi sangat mudah. Dengan syntax sederhana, Anda bisa membuat animasi smooth dan professional dengan stagger otomatis.</p>
+      </div>
+
+      <h3>Preset Animations</h3>
+      <table>
+        <tr>
+          <th>Preset</th>
+          <th>Deskripsi</th>
+          <th>Use Case</th>
+        </tr>
+        <tr>
+          <td><code>SpawnPresets.fadeIn()</code></td>
+          <td>Fade in dari transparan</td>
+          <td>Entrance animations</td>
+        </tr>
+        <tr>
+          <td><code>SpawnPresets.slideInLeft()</code></td>
+          <td>Slide dari kiri dengan fade</td>
+          <td>List item animations</td>
+        </tr>
+        <tr>
+          <td><code>SpawnPresets.slideInUp()</code></td>
+          <td>Slide dari bawah dengan fade</td>
+          <td>Card reveals</td>
+        </tr>
+        <tr>
+          <td><code>SpawnPresets.scaleIn()</code></td>
+          <td>Scale dari kecil dengan fade</td>
+          <td>Modal opens</td>
+        </tr>
+        <tr>
+          <td><code>SpawnPresets.bounceIn()</code></td>
+          <td>Bounce dengan spring easing</td>
+          <td>Playful animations</td>
+        </tr>
+      </table>
+
+      <h3>Simple SPAWN Example</h3>
+      <div class="example">
+        <h4>Fade In Animation</h4>
+        <p>Buat elemen fade in dengan 1 baris kode:</p>
+      </div>
+      <div class="code-block"><code>element FadeInBox {
+  const box = useRef()
+  
+  useEffect(() => {
+    spawn(box, SpawnPresets.fadeIn(600))
+  }, [])
+  
+  &lt;div ref={box}&gt;
+    Elemen ini fade in dengan smooth
+  &lt;/div&gt;
+}</code></div>
+
+      <div class="preview">
+        <h4>Preview - Hover untuk lihat animasi</h4>
+        <div id="fadeDemo" style="background: linear-gradient(135deg, #ff69b4 0%, #d946ef 100%); color: white; padding: 2rem; border-radius: 8px; width: 100%; max-width: 400px; text-align: center; opacity: 1; transition: opacity 0.6s ease-out;">
+          Elemen ini fade in dengan smooth
+        </div>
+      </div>
+
+      <h3>Staggered List Animation</h3>
+      <div class="example">
+        <h4>Animate Multiple Items</h4>
+        <p>Animasi list items dengan stagger otomatis:</p>
+      </div>
+      <div class="code-block"><code>element StaggeredList {
+  const [items, setItems] = useState([1, 2, 3, 4, 5])
+  const listRef = useRef()
+  
+  useEffect(() => {
+    const elements = listRef.current?.querySelectorAll('.item')
+    if (elements) {
+      spawnStagger(Array.from(elements), {
+        duration: 500,
+        stagger: 100,  // 100ms delay antar item
+        from: { opacity: 0, translateY: 20 },
+        to: { opacity: 1, translateY: 0 }
+      })
+    }
+  }, [items])
+  
+  &lt;div ref={listRef} class="list"&gt;
+    {items.map(item => (
+      &lt;div key={item} class="item"&gt;
+        Item {item}
+      &lt;/div&gt;
+    ))}
+  &lt;/div&gt;
+  
+  style {
+    .list { display: flex; flex-direction: column; gap: 1rem; }
+    .item { padding: 1rem; background: linear-gradient(135deg, #ffe4e9 0%, #fff5f7 100%); border-radius: 8px; }
+  }
+}</code></div>
+
+      <div class="preview">
+        <h4>Preview - Staggered Items</h4>
+        <div style="width: 100%; max-width: 400px;">
+          <div style="padding: 1rem; background: linear-gradient(135deg, #ffe4e9 0%, #fff5f7 100%); border-radius: 8px; margin-bottom: 0.5rem; color: var(--primary); font-weight: bold;">Item 1</div>
+          <div style="padding: 1rem; background: linear-gradient(135deg, #ffe4e9 0%, #fff5f7 100%); border-radius: 8px; margin-bottom: 0.5rem; color: var(--primary); font-weight: bold;">Item 2</div>
+          <div style="padding: 1rem; background: linear-gradient(135deg, #ffe4e9 0%, #fff5f7 100%); border-radius: 8px; margin-bottom: 0.5rem; color: var(--primary); font-weight: bold;">Item 3</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Getting Started -->
+    <section id="getting-started">
+      <h2>🚀 Getting Started</h2>
+      
+      <h3>Installation</h3>
+      <div class="code-block"><code>npm install -g mclang</code></div>
+
+      <h3>Create Your First File</h3>
+      <div class="code-block"><code>mclang init my-app
+cd my-app
+mclang dev</code></div>
+
+      <h3>Compile & Run</h3>
+      <div class="code-block"><code>mclang compile app.mc --output dist/app.js</code></div>
+
+      <div style="margin-top: 2rem; text-align: center;">
+        <a href="https://github.com/aditpoenok99/mclang" class="btn">📖 View Full Documentation</a>
+        <a href="https://github.com/aditpoenok99/mclang" class="btn btn-secondary" style="margin-left: 1rem;">⭐ Star on GitHub</a>
+      </div>
+    </section>
+
+    <!-- Why MCLANG -->
+    <section>
+      <h2>💖 Mengapa MCLANG?</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4>🎓 Mudah Dipelajari</h4>
+          <p>Syntax intuitif yang mirip dengan JavaScript tapi lebih sederhana dan ekspresif.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🎨 Nyaman Digunakan</h4>
+          <p>Design dengan warna pink/pastel yang nyaman di mata untuk coding sesi panjang.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🚀 Powerful Features</h4>
+          <p>SPAWN animations, component system, hooks, dan banyak fitur modern lainnya.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🔓 Fully Open Source</h4>
+          <p>MIT License, community-driven, dan transparan dalam pengembangan.</p>
+        </div>
+        <div class="feature-card">
+          <h4>📚 Great Documentation</h4>
+          <p>Dokumentasi lengkap dengan contoh kode dan preview visual di setiap fitur.</p>
+        </div>
+        <div class="feature-card">
+          <h4>💬 Active Community</h4>
+          <p>Community yang supportif untuk membantu Anda dalam perjalanan coding.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <h2>Made with 💖 by MCLANG Community</h2>
+    <p>Mocasus Lang - Modern Programming Language for Web Frontend Development</p>
+    <p style="margin-top: 1rem; opacity: 0.9;">© 2024 MCLANG. All rights reserved. | MIT License</p>
+    <div style="margin-top: 1.5rem;">
+      <a href="https://github.com/aditpoenok99/mclang" style="color: white; text-decoration: none; margin: 0 1rem;">GitHub</a>
+      <a href="https://github.com/aditpoenok99/mclang/discussions" style="color: white; text-decoration: none; margin: 0 1rem;">Discussions</a>
+      <a href="https://github.com/aditpoenok99/mclang/issues" style="color: white; text-decoration: none; margin: 0 1rem;">Issues</a>
+    </div>
+  </footer>
+
+  <script>
+    // Demo fade animation
+    const fadeDemo = document.getElementById('fadeDemo');
+    if (fadeDemo) {
+      fadeDemo.style.opacity = '0';
+      setTimeout(() => {
+        fadeDemo.style.opacity = '1';
+      }, 100);
+    }
+  </script>
+</body>
+</html>
