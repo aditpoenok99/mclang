@@ -1,69 +1,164 @@
 #!/usr/bin/env node
 
-/**
- * MCLANG CLI
- */
-
 import { Command } from 'commander';
 import * as fs from 'fs';
+import * as path from 'path';
+import * as readline from 'readline';
 import { MCLang } from './index';
 
+const VERSION = '1.2.0';
 const program = new Command();
 
-program
-  .name('mclang')
-  .description('Mocasus Lang (MCLANG) - Modern programming language for web frontend')
-  .version('1.1.0');
+program.name('mclang').description('Mocasus Lang CLI').version(VERSION);
+
+const readFileOrExit = (file: string): string => {
+  if (!fs.existsSync(file)) {
+    console.error(`[MocaError CLI001] File tidak ditemukan: ${file}`);
+    process.exit(1);
+  }
+  return fs.readFileSync(file, 'utf-8');
+};
 
 program
-  .command('compile <file>')
-  .description('Compile MCLANG file to JavaScript')
-  .option('-o, --output <file>', 'Output file path')
-  .action((file: string, options: any) => {
+  .command('run <file>')
+  .description('Menjalankan file .mc langsung (interpreter)')
+  .action((file: string) => {
     try {
-      if (!fs.existsSync(file)) {
-        console.error(`Error: File not found: ${file}`);
-        process.exit(1);
+      const source = readFileOrExit(file);
+      const result = MCLang.fromString(source).run();
+      if (result !== null && result !== undefined) {
+        console.log(result);
       }
-
-      const mclang = MCLang.fromFile(file);
-      const output = mclang.compile();
-
-      const outputFile = options.output || file.replace(/\.mc$/, '.js');
-      fs.writeFileSync(outputFile, output, 'utf-8');
-      console.log(`✓ Compiled ${file} to ${outputFile}`);
     } catch (error: any) {
-      console.error(`Error: ${error.message}`);
+      console.error(error.message);
       process.exit(1);
     }
   });
 
 program
-  .command('watch <directory>')
-  .description('Watch directory for changes and compile')
-  .action((directory: string) => {
-    console.log(`Watching ${directory} for changes...`);
+  .command('check <file>')
+  .description('Cek lexer + parser tanpa menjalankan')
+  .action((file: string) => {
+    try {
+      const source = readFileOrExit(file);
+      const report = MCLang.fromString(source).check();
+      console.log(`✓ valid | tokens=${report.tokenCount} statements=${report.statementCount}`);
+    } catch (error: any) {
+      console.error(error.message);
+      process.exit(1);
+    }
   });
 
 program
-  .command('init <project>')
-  .description('Initialize a new MCLANG project')
-  .action((project: string) => {
-    console.log(`Initializing MCLANG project: ${project}`);
+  .command('compile <file>')
+  .description('Compile .mc ke JavaScript')
+  .option('-o, --output <file>', 'Output JS file path')
+  .action((file: string, options: any) => {
+    try {
+      const source = readFileOrExit(file);
+      const js = MCLang.fromString(source).compile();
+      const output = options.output || file.replace(/\.mc$/, '.js');
+      fs.writeFileSync(output, js, 'utf-8');
+      console.log(`✓ Compiled ${file} -> ${output}`);
+    } catch (error: any) {
+      console.error(error.message);
+      process.exit(1);
+    }
   });
 
 program
-  .command('build')
-  .description('Build entire project')
+  .command('repl')
+  .description('REPL Moca interaktif')
   .action(() => {
-    console.log('Building project...');
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout, prompt: 'moca> ' });
+    console.log('Moca REPL v1.2.0 | ketik :q untuk keluar');
+    rl.prompt();
+    rl.on('line', (line) => {
+      const txt = line.trim();
+      if (txt === ':q') {
+        rl.close();
+        return;
+      }
+      try {
+        const result = MCLang.fromString(txt).run();
+        if (result !== null && result !== undefined) console.log(result);
+      } catch (error: any) {
+        console.error(error.message);
+      }
+      rl.prompt();
+    });
   });
 
-program
-  .command('dev')
-  .description('Start development server')
+const mocaPm = program.command('moca').description('Package manager sederhana untuk proyek Moca');
+
+const projectFile = (cwd: string) => path.join(cwd, 'moca.json');
+
+const loadProject = (cwd: string): any => {
+  const p = projectFile(cwd);
+  if (!fs.existsSync(p)) {
+    throw new Error('[MocaError PM001] moca.json belum ada. Jalankan `mclang moca init` dulu.');
+  }
+  return JSON.parse(fs.readFileSync(p, 'utf-8'));
+};
+
+const saveProject = (cwd: string, data: any): void => {
+  fs.writeFileSync(projectFile(cwd), JSON.stringify(data, null, 2), 'utf-8');
+};
+
+mocaPm
+  .command('init')
+  .description('Inisialisasi moca.json')
   .action(() => {
-    console.log('Starting development server...');
+    const cwd = process.cwd();
+    const p = projectFile(cwd);
+    if (fs.existsSync(p)) {
+      console.log('moca.json sudah ada.');
+      return;
+    }
+    saveProject(cwd, { name: path.basename(cwd), version: '0.1.0', dependencies: {} });
+    console.log('✓ moca.json dibuat');
+  });
+
+mocaPm
+  .command('add <pkg> [version]')
+  .description('Tambah dependency ke moca.json')
+  .action((pkg: string, version?: string) => {
+    const cwd = process.cwd();
+    const data = loadProject(cwd);
+    data.dependencies = data.dependencies || {};
+    data.dependencies[pkg] = version || 'latest';
+    saveProject(cwd, data);
+    console.log(`✓ Added ${pkg}@${data.dependencies[pkg]}`);
+  });
+
+mocaPm
+  .command('remove <pkg>')
+  .description('Hapus dependency dari moca.json')
+  .action((pkg: string) => {
+    const cwd = process.cwd();
+    const data = loadProject(cwd);
+    if (!data.dependencies || !data.dependencies[pkg]) {
+      console.log(`Dependency '${pkg}' tidak ditemukan.`);
+      return;
+    }
+    delete data.dependencies[pkg];
+    saveProject(cwd, data);
+    console.log(`✓ Removed ${pkg}`);
+  });
+
+mocaPm
+  .command('list')
+  .description('Lihat dependency Moca')
+  .action(() => {
+    const cwd = process.cwd();
+    const data = loadProject(cwd);
+    const deps = data.dependencies || {};
+    const entries = Object.entries(deps);
+    if (entries.length === 0) {
+      console.log('(kosong) belum ada dependency.');
+      return;
+    }
+    entries.forEach(([name, version]) => console.log(`${name}@${version}`));
   });
 
 program.parse(process.argv);

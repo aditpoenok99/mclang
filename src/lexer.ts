@@ -1,41 +1,22 @@
-/**
- * MCLANG Lexer - Tokenizes source code
- */
-
 import { Token, TokenType } from './types';
+import { MocaError } from './errors';
 
 export class Lexer {
-  private source: string;
-  private position: number = 0;
-  private line: number = 1;
-  private column: number = 1;
-  private tokens: Token[] = [];
+  private readonly source: string;
+  private position = 0;
+  private line = 1;
+  private column = 1;
+  private readonly tokens: Token[] = [];
 
-  private keywords: Map<string, TokenType> = new Map([
+  private readonly keywords: Map<string, TokenType> = new Map([
     ['var', TokenType.VAR],
     ['const', TokenType.CONST],
-    ['function', TokenType.FUNCTION],
     ['if', TokenType.IF],
     ['else', TokenType.ELSE],
-    ['for', TokenType.FOR],
-    ['while', TokenType.WHILE],
-    ['return', TokenType.RETURN],
-    ['class', TokenType.CLASS],
-    ['extends', TokenType.EXTENDS],
-    ['new', TokenType.NEW],
-    ['this', TokenType.THIS],
-    ['import', TokenType.IMPORT],
-    ['export', TokenType.EXPORT],
-    ['from', TokenType.FROM],
     ['true', TokenType.BOOLEAN],
     ['false', TokenType.BOOLEAN],
-    ['async', TokenType.ASYNC],
-    ['await', TokenType.AWAIT],
-    ['element', TokenType.ELEMENT],
-    ['style', TokenType.STYLE],
-    ['script', TokenType.SCRIPT],
 
-    // Mocasus native aliases
+    // Native Moca aliases
     ['mc', TokenType.CONST],
     ['moca', TokenType.VAR],
     ['marah', TokenType.IF],
@@ -46,7 +27,7 @@ export class Lexer {
     this.source = source;
   }
 
-  private peek(offset: number = 0): string {
+  private peek(offset = 0): string {
     const pos = this.position + offset;
     return pos < this.source.length ? this.source[pos] : '\0';
   }
@@ -63,54 +44,30 @@ export class Lexer {
     return char;
   }
 
-  private skipWhitespace(): void {
-    while (/\s/.test(this.peek())) {
-      this.advance();
-    }
-  }
+  private skipWhitespaceAndComments(): void {
+    while (true) {
+      while (/\s/.test(this.peek())) this.advance();
 
-  private readString(quote: string): string {
-    let value = '';
-    this.advance();
-    while (this.peek() !== quote && this.peek() !== '\0') {
-      if (this.peek() === '\\') {
+      if (this.peek() === '/' && this.peek(1) === '/') {
+        while (this.peek() !== '\n' && this.peek() !== '\0') this.advance();
+        continue;
+      }
+
+      if (this.peek() === '/' && this.peek(1) === '*') {
         this.advance();
-        const next = this.peek();
-        switch (next) {
-          case 'n': value += '\n'; break;
-          case 't': value += '\t'; break;
-          case 'r': value += '\r'; break;
-          case '\\': value += '\\'; break;
-          default: value += next;
+        this.advance();
+        while (!(this.peek() === '*' && this.peek(1) === '/')) {
+          if (this.peek() === '\0') {
+            throw new MocaError('Komentar belum ditutup.', 'LEX002', this.line, this.column, 'Tutup komentar dengan */');
+          }
+          this.advance();
         }
         this.advance();
-      } else {
-        value += this.peek();
         this.advance();
+        continue;
       }
+      break;
     }
-    if (this.peek() === '\0') {
-      throw new Error(`Unterminated string at line ${this.line}`);
-    }
-    this.advance();
-    return value;
-  }
-
-  private readNumber(): number {
-    let value = '';
-    while (/\d/.test(this.peek())) {
-      value += this.peek();
-      this.advance();
-    }
-    if (this.peek() === '.' && /\d/.test(this.peek(1))) {
-      value += this.peek();
-      this.advance();
-      while (/\d/.test(this.peek())) {
-        value += this.peek();
-        this.advance();
-      }
-    }
-    return parseFloat(value);
   }
 
   private readIdentifier(): string {
@@ -122,166 +79,156 @@ export class Lexer {
     return value;
   }
 
-  public tokenize(): Token[] {
-    while (this.position < this.source.length) {
-      this.skipWhitespace();
+  private readNumber(): number {
+    let value = '';
+    while (/\d/.test(this.peek())) {
+      value += this.peek();
+      this.advance();
+    }
 
-      const char = this.peek();
-      if (char === '\0') break;
+    if (this.peek() === '.' && /\d/.test(this.peek(1))) {
+      value += this.peek();
+      this.advance();
+      while (/\d/.test(this.peek())) {
+        value += this.peek();
+        this.advance();
+      }
+    }
+    return Number(value);
+  }
 
-      const startCol = this.column;
-
-      if (/\d/.test(char)) {
-        const value = this.readNumber();
-        this.tokens.push({
-          type: TokenType.NUMBER,
-          value,
-          line: this.line,
-          column: startCol,
-          raw: value.toString(),
-        });
-      } else if (char === '"' || char === "'") {
-        const value = this.readString(char);
-        this.tokens.push({
-          type: TokenType.STRING,
-          value,
-          line: this.line,
-          column: startCol,
-          raw: char + value + char,
-        });
-      } else if (/[a-zA-Z_$]/.test(char)) {
-        const identifier = this.readIdentifier();
-        const type = this.keywords.get(identifier) || TokenType.IDENTIFIER;
-        const value = type === TokenType.BOOLEAN ? identifier === 'true' : identifier;
-        this.tokens.push({
-          type,
-          value,
-          line: this.line,
-          column: startCol,
-          raw: identifier,
-        });
-      } else {
-        switch (char) {
-          case '+':
-            this.advance();
-            this.tokens.push({ type: TokenType.PLUS, value: '+', line: this.line, column: startCol, raw: '+' });
-            break;
-          case '-':
-            this.advance();
-            this.tokens.push({ type: TokenType.MINUS, value: '-', line: this.line, column: startCol, raw: '-' });
-            break;
-          case '*':
-            this.advance();
-            this.tokens.push({ type: TokenType.MULTIPLY, value: '*', line: this.line, column: startCol, raw: '*' });
-            break;
-          case '/':
-            this.advance();
-            this.tokens.push({ type: TokenType.DIVIDE, value: '/', line: this.line, column: startCol, raw: '/' });
-            break;
-          case '%':
-            this.advance();
-            this.tokens.push({ type: TokenType.MODULO, value: '%', line: this.line, column: startCol, raw: '%' });
-            break;
-          case '=':
-            this.advance();
-            if (this.peek() === '=') {
-              this.advance();
-              this.tokens.push({ type: TokenType.STRICT_EQUAL, value: '==', line: this.line, column: startCol, raw: '==' });
-            } else if (this.peek() === '>') {
-              this.advance();
-              this.tokens.push({ type: TokenType.ARROW, value: '=>', line: this.line, column: startCol, raw: '=>' });
-            } else {
-              this.tokens.push({ type: TokenType.ASSIGN, value: '=', line: this.line, column: startCol, raw: '=' });
-            }
-            break;
-          case '!':
-            this.advance();
-            if (this.peek() === '=') {
-              this.advance();
-              this.tokens.push({ type: TokenType.NOT_EQUAL, value: '!=', line: this.line, column: startCol, raw: '!=' });
-            } else {
-              this.tokens.push({ type: TokenType.NOT, value: '!', line: this.line, column: startCol, raw: '!' });
-            }
-            break;
-          case '<':
-            this.advance();
-            if (this.peek() === '=') {
-              this.advance();
-              this.tokens.push({ type: TokenType.LESS_EQUAL, value: '<=', line: this.line, column: startCol, raw: '<=' });
-            } else {
-              this.tokens.push({ type: TokenType.LESS_THAN, value: '<', line: this.line, column: startCol, raw: '<' });
-            }
-            break;
-          case '>':
-            this.advance();
-            if (this.peek() === '=') {
-              this.advance();
-              this.tokens.push({ type: TokenType.GREATER_EQUAL, value: '>=', line: this.line, column: startCol, raw: '>=' });
-            } else {
-              this.tokens.push({ type: TokenType.GREATER_THAN, value: '>', line: this.line, column: startCol, raw: '>' });
-            }
-            break;
-          case '&':
-            this.advance();
-            if (this.peek() === '&') {
-              this.advance();
-              this.tokens.push({ type: TokenType.AND, value: '&&', line: this.line, column: startCol, raw: '&&' });
-            }
-            break;
-          case '|':
-            this.advance();
-            if (this.peek() === '|') {
-              this.advance();
-              this.tokens.push({ type: TokenType.OR, value: '||', line: this.line, column: startCol, raw: '||' });
-            }
-            break;
-          case '(':
-            this.advance();
-            this.tokens.push({ type: TokenType.LPAREN, value: '(', line: this.line, column: startCol, raw: '(' });
-            break;
-          case ')':
-            this.advance();
-            this.tokens.push({ type: TokenType.RPAREN, value: ')', line: this.line, column: startCol, raw: ')' });
-            break;
-          case '{':
-            this.advance();
-            this.tokens.push({ type: TokenType.LBRACE, value: '{', line: this.line, column: startCol, raw: '{' });
-            break;
-          case '}':
-            this.advance();
-            this.tokens.push({ type: TokenType.RBRACE, value: '}', line: this.line, column: startCol, raw: '}' });
-            break;
-          case '[':
-            this.advance();
-            this.tokens.push({ type: TokenType.LBRACKET, value: '[', line: this.line, column: startCol, raw: '[' });
-            break;
-          case ']':
-            this.advance();
-            this.tokens.push({ type: TokenType.RBRACKET, value: ']', line: this.line, column: startCol, raw: ']' });
-            break;
-          case ';':
-            this.advance();
-            this.tokens.push({ type: TokenType.SEMICOLON, value: ';', line: this.line, column: startCol, raw: ';' });
-            break;
-          case ',':
-            this.advance();
-            this.tokens.push({ type: TokenType.COMMA, value: ',', line: this.line, column: startCol, raw: ',' });
-            break;
-          case '.':
-            this.advance();
-            this.tokens.push({ type: TokenType.DOT, value: '.', line: this.line, column: startCol, raw: '.' });
-            break;
-          case ':':
-            this.advance();
-            this.tokens.push({ type: TokenType.COLON, value: ':', line: this.line, column: startCol, raw: ':' });
-            break;
-          default:
-            this.advance();
+  private readString(quote: string): string {
+    this.advance();
+    let value = '';
+    while (this.peek() !== quote && this.peek() !== '\0') {
+      if (this.peek() === '\\') {
+        this.advance();
+        const n = this.peek();
+        switch (n) {
+          case 'n': value += '\n'; break;
+          case 't': value += '\t'; break;
+          case 'r': value += '\r'; break;
+          case '\\': value += '\\'; break;
+          case '"': value += '"'; break;
+          case "'": value += "'"; break;
+          default: value += n;
         }
+        this.advance();
+      } else {
+        value += this.peek();
+        this.advance();
       }
     }
 
-    this.tokens.push({ type: TokenType.EOF, value: '', line: this.line, column: this.column, raw: '' });
+    if (this.peek() === '\0') {
+      throw new MocaError('String belum ditutup.', 'LEX003', this.line, this.column, `Gunakan ${quote} penutup.`);
+    }
+    this.advance();
+    return value;
+  }
+
+  private add(type: TokenType, value: string | number | boolean, raw: string, line: number, column: number): void {
+    this.tokens.push({ type, value, raw, line, column });
+  }
+
+  public tokenize(): Token[] {
+    while (this.position < this.source.length) {
+      this.skipWhitespaceAndComments();
+      if (this.peek() === '\0') break;
+
+      const line = this.line;
+      const column = this.column;
+      const char = this.peek();
+
+      if (/\d/.test(char)) {
+        const numberValue = this.readNumber();
+        this.add(TokenType.NUMBER, numberValue, String(numberValue), line, column);
+        continue;
+      }
+
+      if (char === '"' || char === "'") {
+        const text = this.readString(char);
+        this.add(TokenType.STRING, text, `${char}${text}${char}`, line, column);
+        continue;
+      }
+
+      if (/[a-zA-Z_$]/.test(char)) {
+        const ident = this.readIdentifier();
+        const type = this.keywords.get(ident) || TokenType.IDENTIFIER;
+        const value = type === TokenType.BOOLEAN ? ident === 'true' : ident;
+        this.add(type, value, ident, line, column);
+        continue;
+      }
+
+      const next = this.peek(1);
+      if (char === '=' && next === '=') {
+        this.advance(); this.advance();
+        this.add(TokenType.STRICT_EQUAL, '==', '==', line, column);
+        continue;
+      }
+      if (char === '!' && next === '=') {
+        this.advance(); this.advance();
+        this.add(TokenType.NOT_EQUAL, '!=', '!=', line, column);
+        continue;
+      }
+      if (char === '<' && next === '=') {
+        this.advance(); this.advance();
+        this.add(TokenType.LESS_EQUAL, '<=', '<=', line, column);
+        continue;
+      }
+      if (char === '>' && next === '=') {
+        this.advance(); this.advance();
+        this.add(TokenType.GREATER_EQUAL, '>=', '>=', line, column);
+        continue;
+      }
+      if (char === '&' && next === '&') {
+        this.advance(); this.advance();
+        this.add(TokenType.AND, '&&', '&&', line, column);
+        continue;
+      }
+      if (char === '|' && next === '|') {
+        this.advance(); this.advance();
+        this.add(TokenType.OR, '||', '||', line, column);
+        continue;
+      }
+      if (char === '=' && next === '>') {
+        this.advance(); this.advance();
+        this.add(TokenType.ARROW, '=>', '=>', line, column);
+        continue;
+      }
+
+      switch (char) {
+        case '+': this.advance(); this.add(TokenType.PLUS, '+', '+', line, column); break;
+        case '-': this.advance(); this.add(TokenType.MINUS, '-', '-', line, column); break;
+        case '*': this.advance(); this.add(TokenType.MULTIPLY, '*', '*', line, column); break;
+        case '/': this.advance(); this.add(TokenType.DIVIDE, '/', '/', line, column); break;
+        case '%': this.advance(); this.add(TokenType.MODULO, '%', '%', line, column); break;
+        case '=': this.advance(); this.add(TokenType.ASSIGN, '=', '=', line, column); break;
+        case '!': this.advance(); this.add(TokenType.NOT, '!', '!', line, column); break;
+        case '<': this.advance(); this.add(TokenType.LESS_THAN, '<', '<', line, column); break;
+        case '>': this.advance(); this.add(TokenType.GREATER_THAN, '>', '>', line, column); break;
+        case '(': this.advance(); this.add(TokenType.LPAREN, '(', '(', line, column); break;
+        case ')': this.advance(); this.add(TokenType.RPAREN, ')', ')', line, column); break;
+        case '{': this.advance(); this.add(TokenType.LBRACE, '{', '{', line, column); break;
+        case '}': this.advance(); this.add(TokenType.RBRACE, '}', '}', line, column); break;
+        case '[': this.advance(); this.add(TokenType.LBRACKET, '[', '[', line, column); break;
+        case ']': this.advance(); this.add(TokenType.RBRACKET, ']', ']', line, column); break;
+        case ';': this.advance(); this.add(TokenType.SEMICOLON, ';', ';', line, column); break;
+        case ',': this.advance(); this.add(TokenType.COMMA, ',', ',', line, column); break;
+        case '.': this.advance(); this.add(TokenType.DOT, '.', '.', line, column); break;
+        case ':': this.advance(); this.add(TokenType.COLON, ':', ':', line, column); break;
+        default:
+          throw new MocaError(
+            `Karakter '${char}' belum dikenali tokenizer Moca.`,
+            'LEX001',
+            line,
+            column,
+            'Gunakan karakter valid atau cek typo pada kode Anda.'
+          );
+      }
+    }
+
+    this.tokens.push({ type: TokenType.EOF, value: '', raw: '', line: this.line, column: this.column });
     return this.tokens;
   }
 }

@@ -3,13 +3,11 @@
  */
 
 export enum TokenType {
-  // Literals
   NUMBER = 'NUMBER',
   STRING = 'STRING',
   IDENTIFIER = 'IDENTIFIER',
   BOOLEAN = 'BOOLEAN',
 
-  // Keywords
   VAR = 'VAR',
   CONST = 'CONST',
   FUNCTION = 'FUNCTION',
@@ -31,7 +29,6 @@ export enum TokenType {
   STYLE = 'STYLE',
   SCRIPT = 'SCRIPT',
 
-  // Operators
   PLUS = 'PLUS',
   MINUS = 'MINUS',
   MULTIPLY = 'MULTIPLY',
@@ -51,7 +48,6 @@ export enum TokenType {
   NOT = 'NOT',
   ARROW = 'ARROW',
 
-  // Delimiters
   LPAREN = 'LPAREN',
   RPAREN = 'RPAREN',
   LBRACE = 'LBRACE',
@@ -63,7 +59,6 @@ export enum TokenType {
   DOT = 'DOT',
   COLON = 'COLON',
 
-  // Special
   TEMPLATE_STRING = 'TEMPLATE_STRING',
   EOF = 'EOF',
 }
@@ -74,10 +69,4 @@ export interface Token {
   line: number;
   column: number;
   raw: string;
-}
-
-export interface ASTNode {
-  type: string;
-  line: number;
-  column: number;
 }

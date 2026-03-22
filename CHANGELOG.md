@@ -1,5 +1,24 @@
 # MCLANG Change Log
 
+## [1.2.0] - 2026-03-22
+
+### Added
+- Parser AST nyata (`src/parser.ts`)
+- Interpreter runtime (`src/interpreter.ts`)
+- Moca standard library core (`src/stdlib.ts`)
+- Error system ala Moca (`src/errors.ts`)
+- CLI commands baru: `run`, `check`, `repl`
+- Package manager commands: `mclang moca init/add/remove/list`
+- Dokumentasi semantics & paradigma (`docs/SEMANTICS.md`)
+- Dokumentasi stdlib (`docs/STDLIB.md`)
+- Test parser/runtime/error
+
+### Changed
+- Lexer diperkuat untuk stabilitas + komentar + error jelas
+- `package.json` version `1.2.0`
+- CLI version `1.2.0`
+- README dirombak agar mencerminkan implementasi nyata
+
 ## [1.1.0] - 2026-03-22
 
 ### Added
@@ -29,32 +48,3 @@
 - CLI with basic commands (compile, watch, dev, build)
 - Comprehensive documentation and examples
 - MIT License
-
-### Features
-- Variable declarations (const, var)
-- Functions with arrow function syntax
-- Control flow (if/else, for, while, switch)
-- Objects and arrays with destructuring
-- Template literals with interpolation
-- Async/await support
-- Class declarations
-- Module system (import/export)
-- Component composition with props and children
-- State management with hooks
-- Event handling
-- Conditional and loop rendering
-- Responsive CSS media queries
-
-### Coming Soon
-- Advanced type system
-- Better error messages and diagnostics
-- Hot module replacement
-- Performance optimization
-- Plugin system
-- LSP (Language Server Protocol) support
-- Online playground
-- Official VS Code extension
-
----
-
-See [GitHub](https://github.com/aditpoenok99/mclang) for more details.

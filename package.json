@@ -1,10 +1,11 @@
 {
   "name": "mclang",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Mocasus Lang (MCLANG) - A modern programming language for web frontend development",
   "main": "dist/index.js",
   "bin": {
-    "mclang": "dist/cli.js"
+    "mclang": "dist/cli.js",
+    "moca": "dist/cli.js"
   },
   "scripts": {
     "dev": "tsc --watch",
@@ -22,7 +23,10 @@
     "javascript",
     "html",
     "css",
-    "web-development"
+    "web-development",
+    "interpreter",
+    "parser",
+    "moca"
   ],
   "author": "Mocasus Contributors",
   "license": "MIT",

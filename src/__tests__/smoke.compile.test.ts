@@ -10,6 +10,6 @@ describe('MCLANG smoke compile', () => {
 
     const output = MCLang.fromString(source).compile();
     expect(output).toContain('Transpiled from MCLANG');
-    expect(output).toContain('Token count');
+    expect(output).toContain('const judul = "Halo";');
   });
 });

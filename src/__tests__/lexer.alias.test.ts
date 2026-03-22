@@ -12,9 +12,9 @@ describe('MCLANG aliases', () => {
     const tokens = new Lexer(source).tokenize();
     const types = tokens.map((t) => t.type);
 
-    expect(types).toContain(TokenType.CONST); // mc
-    expect(types).toContain(TokenType.VAR); // moca
-    expect(types).toContain(TokenType.IF); // marah
-    expect(types).toContain(TokenType.ELSE); // malu
+    expect(types).toContain(TokenType.CONST);
+    expect(types).toContain(TokenType.VAR);
+    expect(types).toContain(TokenType.IF);
+    expect(types).toContain(TokenType.ELSE);
   });
 });
